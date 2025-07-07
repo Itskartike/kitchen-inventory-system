@@ -1,28 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql2");
-
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// MySQL connection pool
-const db = mysql.createPool({
-  connectionLimit: 10,
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("DB Connection Error:", err);
-    return;
-  }
-  console.log("Connected to MySQL");
-  connection.release();
-});
 
 // CORS configuration
 const isProduction = process.env.NODE_ENV === "production";
