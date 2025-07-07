@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 let pool;
+let db;
 
 if (process.env.NODE_ENV === "production") {
   // Production environment (Render)
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === "production") {
       rejectUnauthorized: false,
     },
   });
+  db = pool; // pg pool has promise support by default
 } else {
   // Development environment (Local)
   const mysql = require("mysql2");
@@ -24,6 +26,7 @@ if (process.env.NODE_ENV === "production") {
     connectionLimit: 10,
     queueLimit: 0,
   });
+  db = pool.promise();
 }
 
-module.exports = pool.promise();
+module.exports = db;
