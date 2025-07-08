@@ -65,12 +65,12 @@ const MenuItems = () => {
   const handleSave = () => {
     if (!form.name || !form.category || !form.price) return;
     if (editId) {
-      axios.put(`${API_URL}/${editId}`, form).then((res) => {
+      axios.put(`${API_URL}/menu-items/${editId}`, form).then((res) => {
         setItems(items.map((i) => (i.id === editId ? res.data : i)));
         setOpen(false);
       });
     } else {
-      axios.post(API_URL, form).then((res) => {
+      axios.post(`${API_URL}/menu-items`, form).then((res) => {
         setItems([...items, res.data]);
         setOpen(false);
       });
