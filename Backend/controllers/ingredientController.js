@@ -2,7 +2,9 @@ const db = require("../models/db");
 
 exports.getIngredients = async (req, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM ingredients");
+    const result = await db.query("SELECT * FROM ingredients");
+    // Check if the result is an array (MySQL) or an object with a 'rows' property (PostgreSQL)
+    const results = Array.isArray(result) ? result[0] : result.rows;
     const mappedResults = results.map((row) => ({
       ...row,
       expiryDate: row.expiry_date ? String(row.expiry_date).slice(0, 10) : "",
@@ -11,7 +13,7 @@ exports.getIngredients = async (req, res) => {
     }));
     res.json(mappedResults);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: { message: err.message, stack: err.stack } });
   }
 };
 
