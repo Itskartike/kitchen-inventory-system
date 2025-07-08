@@ -27,7 +27,7 @@ import {
   Add as AddIcon,
 } from "@mui/icons-material";
 
-const categories = ["Pizza", "Pasta", "Salad", "Drinks", "Dessert"];
+const categories = ["Ramen", "Hot Dogs"];
 const statuses = ["Active", "Inactive", "Completed"];
 
 const MenuItems = () => {
