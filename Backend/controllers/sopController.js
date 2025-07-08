@@ -58,33 +58,35 @@ exports.createOrUpdateSOP = async (req, res) => {
   try {
     await connection.query("BEGIN");
 
-    // 1. Insert or update recipe_sops table
+    // 1. Check if an SOP already exists for this menu item
+    const sopSelectResult = await connection.query(
+      "SELECT id FROM recipe_sops WHERE menu_item_id = $1",
+      [menuItemId]
+    );
+    const existingSop = Array.isArray(sopSelectResult)
+      ? sopSelectResult[0][0]
+      : sopSelectResult.rows[0];
+
     let sopId;
-    if (isProduction) {
-      const upsertQuery = `
-        INSERT INTO recipe_sops (menu_item_id, notes, pdf_url) VALUES ($1, $2, $3)
-        ON CONFLICT (menu_item_id) DO UPDATE SET notes = EXCLUDED.notes, pdf_url = EXCLUDED.pdf_url
-        RETURNING id;
-      `;
-      const result = await connection.query(upsertQuery, [
-        menuItemId,
-        notes,
-        pdf_url,
-      ]);
-      sopId = result.rows[0].id;
-    } else {
+    if (existingSop) {
+      // If it exists, UPDATE it
+      sopId = existingSop.id;
       await connection.query(
-        "INSERT INTO recipe_sops (menu_item_id, notes, pdf_url) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE notes = VALUES(notes), pdf_url = VALUES(pdf_url)",
+        "UPDATE recipe_sops SET notes = $1, pdf_url = $2 WHERE id = $3",
+        [notes, pdf_url, sopId]
+      );
+    } else {
+      // If it does not exist, INSERT it
+      const insertResult = await connection.query(
+        "INSERT INTO recipe_sops (menu_item_id, notes, pdf_url) VALUES ($1, $2, $3) RETURNING id",
         [menuItemId, notes, pdf_url]
       );
-      const [sopRows] = await connection.query(
-        "SELECT id FROM recipe_sops WHERE menu_item_id = ?",
-        [menuItemId]
-      );
-      sopId = sopRows[0].id;
+      sopId = Array.isArray(insertResult)
+        ? insertResult[0].insertId
+        : insertResult.rows[0].id;
     }
 
-    // 3. Remove old steps and ingredients
+    // 2. Remove old steps and ingredients
     await connection.query("DELETE FROM recipe_sop_steps WHERE sop_id = $1", [
       sopId,
     ]);
@@ -93,7 +95,7 @@ exports.createOrUpdateSOP = async (req, res) => {
       [sopId]
     );
 
-    // 4. Insert new steps
+    // 3. Insert new steps
     for (const [idx, step] of (steps || []).entries()) {
       await connection.query(
         "INSERT INTO recipe_sop_steps (sop_id, step_number, description) VALUES ($1, $2, $3)",
@@ -101,7 +103,7 @@ exports.createOrUpdateSOP = async (req, res) => {
       );
     }
 
-    // 5. Insert new ingredients
+    // 4. Insert new ingredients
     for (const ing of ingredients || []) {
       await connection.query(
         "INSERT INTO recipe_sop_ingredients (sop_id, ingredient_name, quantity, unit) VALUES ($1, $2, $3, $4)",
