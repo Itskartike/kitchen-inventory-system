@@ -25,6 +25,7 @@ import AddIcon from "@mui/icons-material/Add";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { fetchSOPsFromGoogleSheet } from "../../services/sopSheetService";
 import axios from "axios";
+import { API_URL } from "../../apiConfig";
 
 const emptySOP = { steps: [], ingredients: [], notes: "", pdf_url: "" };
 
@@ -47,11 +48,11 @@ const RecipeSOPManager = () => {
   // Fetch menu items and units from backend
   useEffect(() => {
     axios
-      .get("http://localhost:5000/menu-items")
+      .get(`${API_URL}/menu-items`)
       .then((res) => setMenuItems(res.data))
       .catch(() => setMenuItems([]));
     axios
-      .get("http://localhost:5000/units")
+      .get(`${API_URL}/units`)
       .then((res) => setUnits(res.data))
       .catch(() => setUnits([]));
   }, []);
@@ -65,7 +66,7 @@ const RecipeSOPManager = () => {
       return;
     }
     axios
-      .get(`http://localhost:5000/recipesop/${menuItemId}`)
+      .get(`${API_URL}/recipesop/${menuItemId}`)
       .then((res) => {
         if (res.data) {
           setSop({
@@ -158,19 +159,16 @@ const RecipeSOPManager = () => {
         steps: sop.steps,
         ingredients: sop.ingredients,
       });
-      const response = await axios.post(
-        `http://localhost:5000/recipesop/${menuItemId}`,
-        {
-          notes: sop.notes,
-          pdf_url,
-          steps: sop.steps,
-          ingredients: sop.ingredients.map((ing) => ({
-            ingredient_name: ing.name,
-            quantity: ing.quantity,
-            unit: ing.unit,
-          })),
-        }
-      );
+      const response = await axios.post(`${API_URL}/recipesop/${menuItemId}`, {
+        notes: sop.notes,
+        pdf_url,
+        steps: sop.steps,
+        ingredients: sop.ingredients.map((ing) => ({
+          ingredient_name: ing.name,
+          quantity: ing.quantity,
+          unit: ing.unit,
+        })),
+      });
       console.log("POST response", response);
       toast.success("Recipe SOP saved!");
       setEditing(false);
@@ -226,7 +224,7 @@ const RecipeSOPManager = () => {
         }));
 
       try {
-        await axios.post(`http://localhost:5000/recipesop/${menuItem.id}`, {
+        await axios.post(`${API_URL}/recipesop/${menuItem.id}`, {
           notes: "",
           pdf_url: "",
           steps: [], // You can parse steps if you add them to your sheet

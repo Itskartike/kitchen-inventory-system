@@ -12,6 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
+import { API_URL } from "../../apiConfig";
 
 const RecipeSOPView = () => {
   const [menuItemId, setMenuItemId] = useState("");
@@ -21,7 +22,7 @@ const RecipeSOPView = () => {
   // Fetch menu items from backend
   useEffect(() => {
     axios
-      .get("http://localhost:5000/menu-items")
+      .get(`${API_URL}/menu-items`)
       .then((res) => setMenuItems(res.data))
       .catch(() => setMenuItems([]));
   }, []);
@@ -33,7 +34,7 @@ const RecipeSOPView = () => {
       return;
     }
     axios
-      .get(`http://localhost:5000/recipesop/${menuItemId}`)
+      .get(`${API_URL}/recipesop/${menuItemId}`)
       .then((res) => setSop(res.data))
       .catch(() => setSop(null));
   }, [menuItemId]);

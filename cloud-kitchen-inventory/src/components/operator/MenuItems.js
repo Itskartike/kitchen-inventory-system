@@ -28,8 +28,8 @@ import {
   Add as AddIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
+import { API_URL } from "../../apiConfig";
 
-const API_URL = "http://localhost:5000/menu-items";
 const statuses = ["Active", "Inactive", "Completed"];
 
 const MenuItems = () => {
@@ -49,14 +49,14 @@ const MenuItems = () => {
 
   useEffect(() => {
     axios
-      .get(API_URL)
+      .get(`${API_URL}/menu-items`)
       .then((res) => setItems(res.data))
       .catch((err) => console.error("Failed to fetch menu items", err));
   }, []);
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/menu-categories")
+      .get(`${API_URL}/menu-categories`)
       .then((res) => setCategories(res.data))
       .catch(() => setCategories([]));
   }, []);
@@ -89,12 +89,12 @@ const MenuItems = () => {
   const handleSave = () => {
     if (!form.name || !form.category || !form.price) return;
     if (editId) {
-      axios.put(`${API_URL}/${editId}`, form).then((res) => {
+      axios.put(`${API_URL}/menu-items/${editId}`, form).then((res) => {
         setItems(items.map((i) => (i.id === editId ? res.data : i)));
         setOpen(false);
       });
     } else {
-      axios.post(API_URL, form).then((res) => {
+      axios.post(`${API_URL}/menu-items`, form).then((res) => {
         setItems([...items, res.data]);
         setOpen(false);
       });
@@ -103,7 +103,7 @@ const MenuItems = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${API_URL}/${id}`)
+      .delete(`${API_URL}/menu-items/${id}`)
       .then(() => setItems(items.filter((item) => item.id !== id)))
       .catch((err) => console.error("Delete failed", err));
   };
@@ -146,7 +146,7 @@ const MenuItems = () => {
         id,
         quantity: quantities[id] || 1,
       }));
-      await axios.post("http://localhost:5000/complete-order", {
+      await axios.post(`${API_URL}/complete-order`, {
         items: orderItems,
       });
       alert("Order completed and ingredients deducted!");

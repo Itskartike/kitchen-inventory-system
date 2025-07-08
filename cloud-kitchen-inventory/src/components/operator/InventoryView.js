@@ -32,6 +32,7 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
+import { API_URL } from "../../apiConfig";
 
 const InventoryView = () => {
   const [items, setItems] = useState([]);
@@ -53,17 +54,18 @@ const InventoryView = () => {
     "Seafood",
     "Fruits",
   ];
-  const API_URL = "http://localhost:5000/ingredients";
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await axios.get(API_URL);
+        const res = await axios.get(`${API_URL}/ingredients`);
         // Normalize traceable to boolean for all items
         const normalized = res.data.map((item) => ({
           ...item,
           traceable:
-            item.traceable === true || item.traceable === 1 || item.traceable === "1",
+            item.traceable === true ||
+            item.traceable === 1 ||
+            item.traceable === "1",
         }));
         setItems(normalized);
       } catch (err) {
@@ -78,7 +80,13 @@ const InventoryView = () => {
 
   const handleViewItem = (item) => {
     // Ensure traceable is boolean when setting selectedItem
-    setSelectedItem({ ...item, traceable: item.traceable === true || item.traceable === 1 || item.traceable === "1" });
+    setSelectedItem({
+      ...item,
+      traceable:
+        item.traceable === true ||
+        item.traceable === 1 ||
+        item.traceable === "1",
+    });
     setUpdateQuantity("");
     setDialogMode("view");
     setOpenDialog(true);
@@ -92,7 +100,13 @@ const InventoryView = () => {
 
   const handleEditItem = (item) => {
     // Ensure traceable is boolean when setting selectedItem
-    setSelectedItem({ ...item, traceable: item.traceable === true || item.traceable === 1 || item.traceable === "1" });
+    setSelectedItem({
+      ...item,
+      traceable:
+        item.traceable === true ||
+        item.traceable === 1 ||
+        item.traceable === "1",
+    });
     setUpdateQuantity(item.quantity); // Pre-fill with current quantity
     setDialogMode("edit");
     setOpenDialog(true);
@@ -118,7 +132,10 @@ const InventoryView = () => {
         ...selectedItem,
         quantity: newQuantity,
       };
-      const res = await axios.put(`${API_URL}/${selectedItem.id}`, payload);
+      const res = await axios.put(
+        `${API_URL}/ingredients/${selectedItem.id}`,
+        payload
+      );
       setItems((prev) =>
         prev.map((item) => (item.id === selectedItem.id ? res.data : item))
       );
@@ -507,7 +524,8 @@ const InventoryView = () => {
                     {!selectedItem.traceable && (
                       <Grid item xs={12}>
                         <Typography color="error" sx={{ mt: 2 }}>
-                          This ingredient is not traceable. Quantity cannot be updated here.
+                          This ingredient is not traceable. Quantity cannot be
+                          updated here.
                         </Typography>
                       </Grid>
                     )}

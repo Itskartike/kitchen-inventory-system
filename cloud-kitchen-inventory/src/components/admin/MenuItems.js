@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "../../apiConfig";
 import {
   Box,
   Typography,
@@ -26,8 +27,6 @@ import {
   Add as AddIcon,
 } from "@mui/icons-material";
 
-const API_URL = "http://localhost:5000/menu-items"; // Change to your actual endpoint
-
 const categories = ["Pizza", "Pasta", "Salad", "Drinks", "Dessert"];
 const statuses = ["Active", "Inactive", "Completed"];
 
@@ -45,7 +44,7 @@ const MenuItems = () => {
   // Fetch menu items from backend
   useEffect(() => {
     axios
-      .get(API_URL)
+      .get(`${API_URL}/menu-items`)
       .then((res) => setItems(res.data))
       .catch((err) => console.error("Failed to fetch menu items", err));
   }, []);
@@ -79,7 +78,7 @@ const MenuItems = () => {
   };
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:5000/menu-items/${id}`)
+      .delete(`${API_URL}/menu-items/${id}`)
       .then(() => setItems(items.filter((item) => item.id !== id)))
       .catch((err) => console.error("Delete failed", err));
   };

@@ -13,17 +13,16 @@ import {
   Cell,
   LabelList,
 } from "recharts";
+import { API_URL } from "../../apiConfig";
 
 const Dashboard = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5000/ingredients";
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await axios.get(API_URL);
+        const res = await axios.get(`${API_URL}/ingredients`);
         setItems(res.data);
       } catch (err) {
         // Optionally handle error

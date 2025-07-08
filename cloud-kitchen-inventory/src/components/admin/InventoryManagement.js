@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../apiConfig";
 import {
   Box,
   Typography,
@@ -73,15 +74,13 @@ const InventoryManagement = () => {
   ];
   const units = ["gm", "ml", "piece", "packets", "bottles", "cans"];
 
-  const API_URL = "http://localhost:5000/ingredients";
-
   useEffect(() => {
     fetchItems();
   }, []);
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${API_URL}/ingredients`);
       setItems(res.data);
     } catch (err) {
       toast.error("Failed to fetch ingredients");
@@ -166,14 +165,17 @@ const InventoryManagement = () => {
 
     try {
       if (editingItem) {
-        const res = await axios.put(`${API_URL}/${editingItem.id}`, payload);
+        const res = await axios.put(
+          `${API_URL}/ingredients/${editingItem.id}`,
+          payload
+        );
         setItems((prev) =>
           prev.map((item) => (item.id === editingItem.id ? res.data : item))
         );
         toast.success("Ingredient updated");
         handleCloseDialog();
       } else {
-        const res = await axios.post(API_URL, payload);
+        const res = await axios.post(`${API_URL}/ingredients`, payload);
         setItems((prev) => [...prev, res.data]);
         toast.success("Ingredient added");
         handleCloseDialog();
@@ -202,7 +204,7 @@ const InventoryManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this ingredient?")) {
       try {
-        await axios.delete(`${API_URL}/${id}`);
+        await axios.delete(`${API_URL}/ingredients/${id}`);
         setItems((prev) => prev.filter((item) => item.id !== id));
         toast.success("Ingredient deleted");
       } catch (err) {

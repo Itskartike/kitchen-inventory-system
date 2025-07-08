@@ -33,18 +33,17 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../../apiConfig";
 
 const OperatorDashboard = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5000/ingredients";
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await axios.get(API_URL);
+        const res = await axios.get(`${API_URL}/ingredients`);
         setItems(res.data);
       } catch (err) {
         toast.error("Failed to fetch ingredients");
