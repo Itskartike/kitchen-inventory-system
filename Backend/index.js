@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 // CORS configuration
 const isProduction = process.env.NODE_ENV === "production";
 const allowedOrigins = isProduction
-  ? ["https://kitchen-inventory-system-p9v9.onrender.com"] // Your production frontend URL
+  ? ["https://kitchen-inventory-app.onrender.com"] // Your production frontend URL
   : ["http://localhost:3000"]; // Your local frontend URL
 
 const corsOptions = {
