@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const path = require("path");
 const PORT = process.env.PORT || 5000;
 
 app.use(
@@ -29,6 +30,23 @@ app.use("/", orderRoutes);
 app.use("/", menuItemRoutes);
 app.use("/", ingredientRoutes);
 app.use("/", menuItemIngredientRoutes);
+
+// --- Serve React App for Production ---
+// This should be placed after all your API routes.
+
+// Serve static files from the React app's build directory
+app.use(
+  express.static(path.join(__dirname, "..", "cloud-kitchen-inventory", "build"))
+);
+
+// The "catchall" handler: for any request that doesn't
+// match one of the API routes above, send back React's index.html file.
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "..", "cloud-kitchen-inventory", "build", "index.html")
+  );
+});
+// --- End of React App Serving ---
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", reason);
