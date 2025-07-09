@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import {
   Box,
   Drawer,
@@ -14,19 +14,20 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Divider
-} from '@mui/material';
+  Divider,
+} from "@mui/material";
 import {
   Dashboard as DashboardIcon,
   Storefront as StorefrontIcon,
   BarChart as BarChartIcon,
-  Logout as LogoutIcon
-} from '@mui/icons-material';
-import { useCloudKitchen } from '../../contexts/CloudKitchenContext';
-import CloudKitchenManager from '../admin/CloudKitchenManager';
-import GlobalDashboard from './GlobalDashboard';
-import toast from 'react-hot-toast';
-import AverageReport from './AverageReport';
+  Logout as LogoutIcon,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
+import { useCloudKitchen } from "../../contexts/CloudKitchenContext";
+import CloudKitchenManager from "../admin/CloudKitchenManager";
+import GlobalDashboard from "./GlobalDashboard";
+import toast from "react-hot-toast";
+import AverageReport from "./AverageReport";
 
 const drawerWidth = 240;
 
@@ -34,13 +35,20 @@ const drawerWidth = 240;
 const SuperAdminReports = () => (
   <Box>
     <Typography variant="h4">Global Reports</Typography>
-    <Typography>Consolidated reports from all kitchens will be available here.</Typography>
+    <Typography>
+      Consolidated reports from all kitchens will be available here.
+    </Typography>
   </Box>
 );
 
 const SuperAdminPanel = () => {
   const { currentSuperAdmin, logout } = useCloudKitchen();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,25 +61,72 @@ const SuperAdminPanel = () => {
   const handleLogout = () => {
     handleProfileMenuClose();
     logout();
-    toast.success('Logged out successfully');
+    toast.success("Logged out successfully");
   };
 
   const menuItems = [
-    { text: 'Global Dashboard', icon: <DashboardIcon />, path: '/super-admin/dashboard' },
-    { text: 'Kitchen Management', icon: <StorefrontIcon />, path: '/super-admin/kitchens' },
-    { text: 'Global Reports', icon: <BarChartIcon />, path: '/super-admin/reports' },
-    { text: 'Average Report', icon: <BarChartIcon />, path: '/super-admin/average-report' },
+    {
+      text: "Global Dashboard",
+      icon: <DashboardIcon />,
+      path: "/super-admin/dashboard",
+    },
+    {
+      text: "Kitchen Management",
+      icon: <StorefrontIcon />,
+      path: "/super-admin/kitchens",
+    },
+    {
+      text: "Global Reports",
+      icon: <BarChartIcon />,
+      path: "/super-admin/reports",
+    },
+    {
+      text: "Average Report",
+      icon: <BarChartIcon />,
+      path: "/super-admin/average-report",
+    },
   ];
 
+  const drawer = (
+    <div>
+      <Toolbar />
+      <Box sx={{ overflow: "auto" }}>
+        <List>
+          {menuItems.map((item) => (
+            <ListItem button key={item.text} component={Link} to={item.path}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </div>
+  );
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <Box sx={{ display: "flex" }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Platform Super Admin
           </Typography>
           <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-            <Avatar sx={{ bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ bgcolor: "secondary.main" }}>
               {currentSuperAdmin?.name?.charAt(0)}
             </Avatar>
           </IconButton>
@@ -89,27 +144,50 @@ const SuperAdminPanel = () => {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          flexGrow: 1,
+          p: { xs: 2, sm: 3 },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          mt: { xs: 6, sm: 8 },
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem button key={item.text} component={Link} to={item.path}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <Routes>
           <Route path="dashboard" element={<GlobalDashboard />} />
           <Route path="kitchens" element={<CloudKitchenManager />} />
@@ -122,4 +200,4 @@ const SuperAdminPanel = () => {
   );
 };
 
-export default SuperAdminPanel; 
+export default SuperAdminPanel;

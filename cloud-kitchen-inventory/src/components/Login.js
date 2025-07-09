@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Paper,
@@ -8,39 +8,43 @@ import {
   Alert,
   Avatar,
   Chip,
-  Divider
-} from '@mui/material';
-import { Lock as LockIcon, Restaurant as RestaurantIcon } from '@mui/icons-material';
-import { useCloudKitchen } from '../contexts/CloudKitchenContext';
+  Divider,
+} from "@mui/material";
+import {
+  Lock as LockIcon,
+  Restaurant as RestaurantIcon,
+} from "@mui/icons-material";
+import { useCloudKitchen } from "../contexts/CloudKitchenContext";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  const { selectedKitchen, authenticateUser, isAuthenticated } = useCloudKitchen();
+
+  const { selectedKitchen, authenticateUser, isAuthenticated } =
+    useCloudKitchen();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     if (!selectedKitchen) {
-      setError('No kitchen selected. Please select a kitchen first.');
+      setError("No kitchen selected. Please select a kitchen first.");
       setLoading(false);
       return;
     }
 
     const result = authenticateUser(username, password);
-    
+
     if (result.success) {
       // Login successful - the context will handle the state
-      console.log('Login successful:', result.user);
+      console.log("Login successful:", result.user);
     } else {
-      setError(result.error || 'Login failed');
+      setError(result.error || "Login failed");
     }
-    
+
     setLoading(false);
   };
 
@@ -52,22 +56,24 @@ const Login = () => {
 
   if (!selectedKitchen) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh',
-        bgcolor: 'background.default'
-      }}>
-        <Paper sx={{ p: 4, maxWidth: 400, width: '100%', textAlign: 'center' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          bgcolor: "background.default",
+        }}
+      >
+        <Paper sx={{ p: 4, maxWidth: 400, width: "100%", textAlign: "center" }}>
           <Typography variant="h5" gutterBottom>
             No Kitchen Selected
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Please select a cloud kitchen to continue.
           </Typography>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={handleBackToKitchenSelection}
             startIcon={<RestaurantIcon />}
           >
@@ -79,17 +85,19 @@ const Login = () => {
   }
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      minHeight: '100vh',
-      bgcolor: 'background.default'
-    }}>
-      <Paper sx={{ p: 4, maxWidth: 450, width: '100%' }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+      }}
+    >
+      <Paper sx={{ p: { xs: 2, sm: 4 }, maxWidth: 450, width: "100%" }}>
         {/* Kitchen Info Header */}
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', mb: 2 }}>
+        <Box sx={{ textAlign: "center", mb: 3 }}>
+          <Avatar sx={{ bgcolor: "primary.main", mx: "auto", mb: 2 }}>
             <RestaurantIcon />
           </Avatar>
           <Typography variant="h5" gutterBottom>
@@ -98,9 +106,11 @@ const Login = () => {
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             {selectedKitchen.location}
           </Typography>
-          <Chip 
-            label={selectedKitchen.subscription} 
-            color={selectedKitchen.subscription === 'premium' ? 'success' : 'default'}
+          <Chip
+            label={selectedKitchen.subscription}
+            color={
+              selectedKitchen.subscription === "premium" ? "success" : "default"
+            }
             size="small"
             sx={{ mb: 2 }}
           />
@@ -110,8 +120,13 @@ const Login = () => {
         <Typography variant="h6" gutterBottom align="center">
           Sign In
         </Typography>
-        
-        <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="center"
+          sx={{ mb: 3 }}
+        >
           Enter your credentials to access the inventory management system
         </Typography>
 
@@ -132,7 +147,7 @@ const Login = () => {
             autoFocus
             disabled={loading}
           />
-          
+
           <TextField
             fullWidth
             label="Password"
@@ -143,7 +158,7 @@ const Login = () => {
             required
             disabled={loading}
           />
-          
+
           <Button
             type="submit"
             fullWidth
@@ -152,13 +167,13 @@ const Login = () => {
             disabled={loading}
             startIcon={<LockIcon />}
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? "Signing In..." : "Sign In"}
           </Button>
         </form>
 
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
-          <Button 
-            variant="text" 
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <Button
+            variant="text"
             size="small"
             onClick={handleBackToKitchenSelection}
           >
@@ -167,10 +182,12 @@ const Login = () => {
         </Box>
 
         {/* Demo Credentials Info */}
-        <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+        <Box sx={{ mt: 3, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            <strong>Demo Credentials:</strong><br />
-            Admin: admin_spice / hashed_password_here<br />
+            <strong>Demo Credentials:</strong>
+            <br />
+            Admin: admin_spice / hashed_password_here
+            <br />
             Operator: chef_spice / hashed_password_here
           </Typography>
         </Box>
@@ -179,4 +196,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
