@@ -4,23 +4,16 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration
-const isProduction = process.env.NODE_ENV === "production";
-const allowedOrigins = isProduction
-  ? ["https://kitchen-inventory-app.onrender.com"] // Your production frontend URL
-  : ["http://localhost:3000"]; // Your local frontend URL
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: [
+      "https://kitchen-inventory-app.onrender.com",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 // --- Modular route imports ---
