@@ -310,7 +310,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Developer
 **Kartik Gupta**
 - GitHub: [@Itskartike](https://github.com/Itskartike)
-- LinkedIn: [Connect with me](https://linkedin.com/in/your-profile)
+- LinkedIn: [Connect with me](https://www.linkedin.com/in/itskartike/)
 
 ## 🙏 Acknowledgments
 - Thanks to the open-source community for excellent tools and libraries
