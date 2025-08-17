@@ -308,7 +308,7 @@ The system implements intelligent inventory deduction:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Developer
-**Kartik Gupta**
+**Hukum kumar**
 - GitHub: [@Itskartike](https://github.com/Itskartike)
 - LinkedIn: [Connect with me](https://www.linkedin.com/in/itskartike/)
 
